@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+9f79281ba6de9255d4ed655aa1cd05b0 /home/kaila/coimbra-surf22/catkin_ws/devel/.private/beginner_tutorials/share/roseus/ros/beginner_tutorials/manifest.l
+7c3f10117bb649ad1d777a8071c6846b CMakeFiles/beginner_tutorials_generate_messages_eus
+583b2ddbfd2cf90d85282fd898cc0586 CMakeFiles/clean_test_results

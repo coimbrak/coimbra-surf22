@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/kaila/catkin_ws/devel/lib/beginner_tutorials/frequency"
-  "/home/kaila/catkin_ws/devel/lib/beginner_tutorials/frequency.pdb"
+  "/home/kaila/coimbra-surf22/catkin_ws/devel/.private/beginner_tutorials/lib/beginner_tutorials/frequency"
+  "/home/kaila/coimbra-surf22/catkin_ws/devel/.private/beginner_tutorials/lib/beginner_tutorials/frequency.pdb"
   "CMakeFiles/frequency.dir/src/frequency.cpp.o"
 )
 

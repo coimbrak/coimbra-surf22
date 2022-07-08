@@ -1,4 +1,4 @@
-prefix=/home/kaila/catkin_ws/install
+prefix=/home/kaila/coimbra-surf22/catkin_ws/install
 
 Name: beginner_tutorials
 Description: Description of beginner_tutorials

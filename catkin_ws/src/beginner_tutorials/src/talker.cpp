@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 // %EndTag(PUBLISHER)%
 
 // %Tag(LOOP_RATE)%
-  ros::Rate loop_rate(6); // EDITED BY KAILA FOR TESTING
+  ros::Rate loop_rate(1); // EDITED BY KAILA FOR TESTING
 // %EndTag(LOOP_RATE)%
   /**
    * A count of how many messages we have sent. This is used to create

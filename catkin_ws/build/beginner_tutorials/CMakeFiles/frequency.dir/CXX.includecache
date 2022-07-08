@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/kaila/catkin_ws/src/beginner_tutorials/src/frequency.cpp
+/home/kaila/coimbra-surf22/catkin_ws/src/beginner_tutorials/src/frequency.cpp
 ros/ros.h
-/home/kaila/catkin_ws/src/beginner_tutorials/src/ros/ros.h
+/home/kaila/coimbra-surf22/catkin_ws/src/beginner_tutorials/src/ros/ros.h
 std_msgs/String.h
-/home/kaila/catkin_ws/src/beginner_tutorials/src/std_msgs/String.h
+/home/kaila/coimbra-surf22/catkin_ws/src/beginner_tutorials/src/std_msgs/String.h
 ctime
 -
 iostream

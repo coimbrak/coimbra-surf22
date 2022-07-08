@@ -39,13 +39,21 @@
 import rospy
 import time
 from std_msgs.msg import String
+from std_msgs.msg import Float64
 prev_id = time.time()
+freqTest = Float64()
+
+
+pub = rospy.Publisher('chatter/freq', Float64, queue_size=5)
 
 def callback(data):
     global prev_id
+    global freqTest
     curr_id = time.time()
-    freq = 1/(curr_id - prev_id)
-    rospy.loginfo(rospy.get_caller_id() + ' Frequency %f', freq)
+    # prev_id = time.time()-2
+    freqTest.data = (curr_id - prev_id + 1)
+    # freqTest.data = 1.0
+    #rospy.loginfo(rospy.get_caller_id() + ' Frequency %f', freq)
     prev_id = time.time()
 
 def frequency():
@@ -55,12 +63,22 @@ def frequency():
     # anonymous=True flag means that rospy will choose a unique
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
-    rospy.init_node('listener', anonymous=True)
 
-    rospy.Subscriber('chatter', String, callback)
+    # pub = rospy.Publisher('chatter/freq', Float64, queue_size=5)
+    pub.publish(freqTest)
 
     # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
+    return
+    
 
 if __name__ == '__main__':
-    frequency()
+
+    rospy.init_node('listener', anonymous=True)
+
+    rospy.Subscriber('chatter', Float64, callback)
+
+    prev_id = time.time()
+
+    while not rospy.is_shutdown():
+        frequency()
+        time.sleep(1)

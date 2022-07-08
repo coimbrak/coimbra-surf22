@@ -121,7 +121,7 @@ include_directories(include ${catkin_INCLUDE_DIRS}
 #  ${catkin_INCLUDE_DIRS}
 )
 
-catkin_install_python(PROGRAMS scripts/talker.py scripts/listener.py scripts/frequency.py
+catkin_install_python(PROGRAMS scripts/talker.py scripts/listener.py scripts/frequency.py scripts/freq_val.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -137,6 +137,10 @@ add_dependencies(listener beginner_tutorials_generate_messages_cpp)
 add_executable(frequency src/frequency.cpp)
 target_link_libraries(frequency ${catkin_LIBRARIES})
 add_dependencies(frequency beginner_tutorials_generate_messages_cpp)
+
+add_executable(freq_val src/freq_val.cpp)
+target_link_libraries(freq_val ${catkin_LIBRARIES})
+add_dependencies(freq_val beginner_tutorials_generate_messages_cpp)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

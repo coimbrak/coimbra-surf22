@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/kaila/catkin_ws/devel/share/roseus/ros/beginner_tutorials/manifest.l"
+  "/home/kaila/coimbra-surf22/catkin_ws/devel/.private/beginner_tutorials/share/roseus/ros/beginner_tutorials/manifest.l"
   "CMakeFiles/beginner_tutorials_generate_messages_eus"
 )
 

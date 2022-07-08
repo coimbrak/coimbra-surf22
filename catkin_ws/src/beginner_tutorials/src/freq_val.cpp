@@ -50,7 +50,7 @@ int main(int argc, char **argv)
    * part of the ROS system.
    */
 // %Tag(INIT)%
-  ros::init(argc, argv, "talker");
+  ros::init(argc, argv, "freq_val");
 // %EndTag(INIT)%
 
   /**
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     std_msgs::String msg;
 
     std::stringstream ss;
-    ss << "hello world " << count;
+    ss << "from freq_val file " << count;
     msg.data = ss.str();
 // %EndTag(FILL_MESSAGE)%
 
