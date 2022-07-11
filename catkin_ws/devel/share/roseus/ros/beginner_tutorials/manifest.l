@@ -1,1 +1,0 @@
-/home/kaila/coimbra-surf22/catkin_ws/devel/.private/beginner_tutorials/share/roseus/ros/beginner_tutorials/manifest.l
