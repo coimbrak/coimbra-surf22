@@ -46,10 +46,10 @@ def freq_val():
     rospy.init_node('freq_val', anonymous=True)
     rate = rospy.Rate(1) # 1hz
     while not rospy.is_shutdown():
-	float64 freqPub = frequency.freq
-        hello_str = "Published frequency: %f" % freqPub
-        rospy.loginfo(hello_str)
-        pub.publish(hello_str)
+	# float64 freqPub = frequency.freq
+        # hello_str = "Published frequency: %f" % freqPub
+        # rospy.loginfo(hello_str)
+        # pub.publish(hello_str)
         rate.sleep()
 
 if __name__ == '__main__':

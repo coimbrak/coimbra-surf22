@@ -50,9 +50,7 @@ def callback(data):
     global prev_id
     global freqTest
     curr_id = time.time()
-    # prev_id = time.time()-2
-    freqTest.data = (curr_id - prev_id + 1)
-    # freqTest.data = 1.0
+    freqTest.data = 1/(curr_id - prev_id)
     #rospy.loginfo(rospy.get_caller_id() + ' Frequency %f', freq)
     prev_id = time.time()
 
@@ -75,7 +73,7 @@ if __name__ == '__main__':
 
     rospy.init_node('listener', anonymous=True)
 
-    rospy.Subscriber('chatter', Float64, callback)
+    rospy.Subscriber('chatter', String, callback)
 
     prev_id = time.time()
 
