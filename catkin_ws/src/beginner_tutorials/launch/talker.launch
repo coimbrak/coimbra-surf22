@@ -1,0 +1,4 @@
+<launch>
+        <node respawn="true" pkg="beginner_tutorials" type="talker" name="talker1" output="screen" />
+
+</launch>
