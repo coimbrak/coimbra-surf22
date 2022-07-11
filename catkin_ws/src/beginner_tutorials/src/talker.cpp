@@ -26,10 +26,10 @@
  */
 // %Tag(FULLTEXT)%
 // %Tag(ROS_HEADER)%
-#include "ros/ros.h"
+#include <ros/ros.h>
 // %EndTag(ROS_HEADER)%
 // %Tag(MSG_HEADER)%
-#include "std_msgs/String.h"
+#include <std_msgs/String.h>
 // %EndTag(MSG_HEADER)%
 
 #include <sstream>

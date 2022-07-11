@@ -26,15 +26,20 @@
  */
 
 // %Tag(FULLTEXT)%
-#include "ros/ros.h"
-#include "std_msgs/String.h"
+#include <ros/ros.h>
+#include <std_msgs/String.h>
 #include <ctime>
 #include <iostream>
 #include <chrono>
+#include <string>
 using namespace std;
 using namespace std::chrono;
 
 double prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+//std_msgs::String msg;
+ros::Publisher chatter_pub;
+std::string ss = "unknown";
+
 
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
@@ -44,61 +49,50 @@ void chatterCallback(const std_msgs::String::ConstPtr& msg)
 {
   double curr_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
   double freq = 1000/(curr_time - prev_time);
-  ROS_INFO("Frequency: [%f]", freq);
+
+  //std_msgs::String msg1;
+  ss = "freq: " + std::to_string(freq);
+  //ss << "frequency: " << freq;
+  //msg1.data = ss.str();
+  //ROS_INFO("Frequency: [%s]", ss.str()); // msg.data ?
+
+
+
   prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+
 }
 // %EndTag(CALLBACK)%
 
 int main(int argc, char **argv)
 {
-  /**
-   * The ros::init() function needs to see argc and argv so that it can perform
-   * any ROS arguments and name remapping that were provided at the command line.
-   * For programmatic remappings you can use a different version of init() which takes
-   * remappings directly, but for most command-line programs, passing argc and argv is
-   * the easiest way to do it.  The third argument to init() is the name of the node.
-   *
-   * You must call one of the versions of ros::init() before using any other
-   * part of the ROS system.
-   */
+
   ros::init(argc, argv, "listener");
 
-  /**
-   * NodeHandle is the main access point to communications with the ROS system.
-   * The first NodeHandle constructed will fully initialize this node, and the last
-   * NodeHandle destructed will close down the node.
-   */
   ros::NodeHandle n;
 
-  /**
-   * The subscribe() call is how you tell ROS that you want to receive messages
-   * on a given topic.  This invokes a call to the ROS
-   * master node, which keeps a registry of who is publishing and who
-   * is subscribing.  Messages are passed to a callback function, here
-   * called chatterCallback.  subscribe() returns a Subscriber object that you
-   * must hold on to until you want to unsubscribe.  When all copies of the Subscriber
-   * object go out of scope, this callback will automatically be unsubscribed from
-   * this topic.
-   *
-   * The second parameter to the subscribe() function is the size of the message
-   * queue.  If messages are arriving faster than they are being processed, this
-   * is the number of messages that will be buffered up before beginning to throw
-   * away the oldest ones.
-   */
-// %Tag(SUBSCRIBER)%
+  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter_freq", 1000);
   ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);
-// %EndTag(SUBSCRIBER)%
 
-  /**
-   * ros::spin() will enter a loop, pumping callbacks.  With this version, all
-   * callbacks will be called from within this thread (the main one).  ros::spin()
-   * will exit when Ctrl-C is pressed, or the node is shutdown by the master.
-   */
-// %Tag(SPIN)%
-  ros::spin();
-// %EndTag(SPIN)%
+  ros::Rate loop_rate(1); // EDITED BY KAILA FOR TESTING
+
+  while (ros::ok())
+
+  {
+
+
+  std_msgs::String msgOut;
+  msgOut.data = ss.c_str();
+  chatter_pub.publish(msgOut); 
+
+
+  // Loop timing
+  ros::spinOnce();
+  loop_rate.sleep();
+
+  }
+
+
 
   return 0;
 }
-// %EndTag(FULLTEXT)%
 
