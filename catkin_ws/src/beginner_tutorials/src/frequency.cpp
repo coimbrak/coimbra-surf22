@@ -28,6 +28,7 @@
 // %Tag(FULLTEXT)%
 #include <ros/ros.h>
 #include <std_msgs/String.h>
+#include <std_msgs/Bool.h>
 #include <ctime>
 #include <iostream>
 #include <chrono>
@@ -35,12 +36,10 @@
 using namespace std;
 using namespace std::chrono;
 
-// double prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-// auto prev_time = std::chrono::system_clock::now();
-
 //std_msgs::String msg;
 ros::Publisher chatter_pub;
-std::string ss = "unknown";
+// std::string ss = "unknown";
+bool sensor_ok = 0;
 
 
 /**
@@ -49,25 +48,29 @@ std::string ss = "unknown";
 // %Tag(CALLBACK)%
 void chatterCallback(const std_msgs::String::ConstPtr& msg)
 {
-  // double curr_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  // double freq = 1000/(curr_time - prev_time);
 
   static double prev_time = 0;
-
   double curr_time =ros::Time::now().toSec();
-  // auto curr_time = std::chrono::system_clock::now();
-  double freq = curr_time - prev_time;
+  double freq = 1/(curr_time - prev_time);
 
   ROS_INFO("old: %.2f new: %.2f, diff: %.2f",prev_time,curr_time,curr_time-prev_time);
-  freq = 1/freq;
-  ss = "frequency: " + std::to_string(freq);
+  double actual = 12;
+  if ((actual - 0.5 < freq) && (freq < actual + 0.5)) // checks if signal frequency is within 1 Hz of expected frequency
+    {
+      sensor_ok = 1;
+    }
+  else
+    {
+      sensor_ok = 0;
+    }
+  
+  // ss = "frequency: " + std::to_string(sensor_ok);
   prev_time = curr_time;
 
 
   //ss << "frequency: " << freq;
   //msg1.data = ss.str();
-  //ROS_INFO("Frequency: [%s]", ss.str()); // msg.data ?
-  // prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  //ROS_INFO("Frequency: [%s]", ss.str()); 
 
 }
 // %EndTag(CALLBACK)%
@@ -79,23 +82,26 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
   
-  chatter_pub = n.advertise<std_msgs::String>("chatterfreq", 10); //ros::Publisher
+  // chatter_pub = n.advertise<std_msgs::String>("chatterfreq", 10); //ros::Publisher
+  chatter_pub = n.advertise<std_msgs::Bool>("sensor_ok", 10);
   ros::Subscriber sub = n.subscribe("chatter", 10, chatterCallback);
 
 
   ros::Rate loop_rate(1); // EDITED BY KAILA FOR TESTING
 
-  // prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-
   ros::AsyncSpinner spinner(5); // Specify # of threads
   spinner.start();
+
+  std_msgs::Bool msgOut;
 
   while (ros::ok())
 
   {
 
-  std_msgs::String msgOut; 
-  msgOut.data = ss.c_str();
+  // std_msgs::String msgOut; 
+  // msgOut.data = ss.c_str();
+  
+  msgOut.data = sensor_ok;
   chatter_pub.publish(msgOut); 
 
 
