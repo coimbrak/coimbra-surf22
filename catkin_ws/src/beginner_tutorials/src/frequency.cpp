@@ -83,9 +83,12 @@ int main(int argc, char **argv)
   ros::Subscriber sub = n.subscribe("chatter", 10, chatterCallback);
 
 
-  ros::Rate loop_rate(100); // EDITED BY KAILA FOR TESTING
+  ros::Rate loop_rate(1); // EDITED BY KAILA FOR TESTING
 
   // prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+
+  ros::AsyncSpinner spinner(5); // Specify # of threads
+  spinner.start();
 
   while (ros::ok())
 
@@ -97,8 +100,11 @@ int main(int argc, char **argv)
 
 
   // Loop timing
-  ros::spinOnce();
+  // ros::spinOnce();
+
+  
   loop_rate.sleep();
+  // ros::waitForShutdown();
 
   }
 
