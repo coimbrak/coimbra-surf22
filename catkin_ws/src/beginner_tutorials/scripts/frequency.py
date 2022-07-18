@@ -53,7 +53,7 @@ def callback(data):
     freqTest.data = 1/(curr_id - prev_id)
     #rospy.loginfo(rospy.get_caller_id() + ' Frequency %f', freq)
     prev_id = time.time()
-
+3
 def frequency():
 
     # In ROS, nodes are uniquely named. If two nodes with the same

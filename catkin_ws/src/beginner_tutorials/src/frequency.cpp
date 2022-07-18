@@ -35,7 +35,9 @@
 using namespace std;
 using namespace std::chrono;
 
-double prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+// double prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+// auto prev_time = std::chrono::system_clock::now();
+
 //std_msgs::String msg;
 ros::Publisher chatter_pub;
 std::string ss = "unknown";
@@ -47,18 +49,25 @@ std::string ss = "unknown";
 // %Tag(CALLBACK)%
 void chatterCallback(const std_msgs::String::ConstPtr& msg)
 {
-  double curr_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-  double freq = 1000/(curr_time - prev_time);
+  // double curr_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  // double freq = 1000/(curr_time - prev_time);
 
-  //std_msgs::String msg1;
-  ss = "freq: " + std::to_string(freq);
+  static double prev_time = 0;
+
+  double curr_time =ros::Time::now().toSec();
+  // auto curr_time = std::chrono::system_clock::now();
+  double freq = curr_time - prev_time;
+
+  ROS_INFO("old: %.2f new: %.2f, diff: %.2f",prev_time,curr_time,curr_time-prev_time);
+  freq = 1/freq;
+  ss = "frequency: " + std::to_string(freq);
+  prev_time = curr_time;
+
+
   //ss << "frequency: " << freq;
   //msg1.data = ss.str();
   //ROS_INFO("Frequency: [%s]", ss.str()); // msg.data ?
-
-
-
-  prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+  // prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 
 }
 // %EndTag(CALLBACK)%
@@ -69,18 +78,20 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "listener");
 
   ros::NodeHandle n;
+  
+  chatter_pub = n.advertise<std_msgs::String>("chatterfreq", 10); //ros::Publisher
+  ros::Subscriber sub = n.subscribe("chatter", 10, chatterCallback);
 
-  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter_freq", 1000);
-  ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);
 
-  ros::Rate loop_rate(1); // EDITED BY KAILA FOR TESTING
+  ros::Rate loop_rate(100); // EDITED BY KAILA FOR TESTING
+
+  // prev_time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 
   while (ros::ok())
 
   {
 
-
-  std_msgs::String msgOut;
+  std_msgs::String msgOut; 
   msgOut.data = ss.c_str();
   chatter_pub.publish(msgOut); 
 
