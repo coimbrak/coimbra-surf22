@@ -10,8 +10,8 @@
 
 #include "ros.h"
 #include "std_msgs/Time.h"
+#include "std_msgs/Int32.h"
 #include <std_msgs/Bool.h>
-
 
 #include <Adafruit_NeoPixel.h>
 
@@ -38,10 +38,26 @@ bool sensor_ok;
 void freqCallback(const std_msgs::Bool& msg)
 {
   sensor_ok = msg.data; // takes data from sensor_ok topic
+  
+}
+
+int prevCount = 0;
+unsigned long prev_time = millis();
+
+void countCallback(const std_msgs::Int32& msgCount)
+{
+  int count = msgCount.data;
+  if (count == prevCount) // if talker stops publishing, sensor_ok is false
+  {
+    sensor_ok = false;
+  }
+  prevCount = count;
+  prev_time = millis(); // records the last time countCallback is called
 }
 
 
 ros::Subscriber<std_msgs::Bool> sub("sensor_ok", &freqCallback);
+ros::Subscriber<std_msgs::Int32> subCount("count_pub", &countCallback);
 
 
 void setup() {
@@ -59,6 +75,7 @@ void setup() {
 
   // Subscriber
   nh.subscribe(sub);
+  nh.subscribe(subCount);
 
   // Start the LED
   strip.begin();
@@ -109,22 +126,23 @@ void loop() {
   digitalWrite(pin_60Hz, HIGH);
   digitalWrite(pin_30Hz, HIGH);
   digitalWrite(pin_10Hz, HIGH);
-
+  
+  unsigned long curr_time = millis();
 
   // Set the LED colour
   if (nh.connected())
   {
-     if (sensor_ok)
+     if ((sensor_ok) && (curr_time - prev_time < 2000)) // turns yellow if not publishing for more than 2 seconds
      {
-       strip.setPixelColor(0, strip.Color(255,   255,   0));
+       strip.setPixelColor(0, strip.Color(0,   100,   0));
      }
      else 
      {
-       strip.setPixelColor(0, strip.Color(255,   100,   0)); // amber/yellow LED if sensor_ok is false
+       strip.setPixelColor(0, strip.Color(100,   50,   0)); // amber/yellow LED if sensor_ok is false
      }
   } 
   else {
-      strip.setPixelColor(0, strip.Color(255,   0,   0));
+      strip.setPixelColor(0, strip.Color(100,   0,   0));
   }
   strip.show();
 

@@ -29,6 +29,7 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <std_msgs/Bool.h>
+#include <std_msgs/Int32.h>
 #include <ctime>
 #include <iostream>
 #include <chrono>
@@ -38,8 +39,10 @@ using namespace std::chrono;
 
 //std_msgs::String msg;
 ros::Publisher chatter_pub;
+ros::Publisher count_pub;
 // std::string ss = "unknown";
 bool sensor_ok = 0;
+int countPub = 0; // count how often the talker is publishing
 
 
 /**
@@ -54,7 +57,7 @@ void chatterCallback(const std_msgs::String::ConstPtr& msg)
   double freq = 1/(curr_time - prev_time);
 
   ROS_INFO("old: %.2f new: %.2f, diff: %.2f",prev_time,curr_time,curr_time-prev_time);
-  double actual = 12;
+  double actual = 12; // EDIT HERE FOR EXPECTED FREQUENCY
   if ((actual - 0.5 < freq) && (freq < actual + 0.5)) // checks if signal frequency is within 1 Hz of expected frequency
     {
       sensor_ok = 1;
@@ -75,6 +78,11 @@ void chatterCallback(const std_msgs::String::ConstPtr& msg)
 }
 // %EndTag(CALLBACK)%
 
+void countCallback(const std_msgs::String::ConstPtr& msg)
+{
+  countPub += 1;
+}
+
 int main(int argc, char **argv)
 {
 
@@ -84,7 +92,9 @@ int main(int argc, char **argv)
   
   // chatter_pub = n.advertise<std_msgs::String>("chatterfreq", 10); //ros::Publisher
   chatter_pub = n.advertise<std_msgs::Bool>("sensor_ok", 10);
+  count_pub = n.advertise<std_msgs::Int32>("count_pub", 10);
   ros::Subscriber sub = n.subscribe("chatter", 10, chatterCallback);
+  ros::Subscriber subCount = n.subscribe("chatter", 10, countCallback);
 
 
   ros::Rate loop_rate(1); // EDITED BY KAILA FOR TESTING
@@ -93,6 +103,7 @@ int main(int argc, char **argv)
   spinner.start();
 
   std_msgs::Bool msgOut;
+  std_msgs::Int32 countOut;
 
   while (ros::ok())
 
@@ -103,6 +114,9 @@ int main(int argc, char **argv)
   
   msgOut.data = sensor_ok;
   chatter_pub.publish(msgOut); 
+
+  countOut.data = countPub;
+  count_pub.publish(countOut);
 
 
   // Loop timing
