@@ -33,31 +33,31 @@ int led_count_ =  1;
 
 Adafruit_NeoPixel strip(led_count_, led_pin_, NEO_GRB + NEO_KHZ800);
 
-bool sensor_ok;
+bool sensor_ok_ = false;
 
-void freqCallback(const std_msgs::Bool& msg)
+uint32_t last_freq_update_ = 0;
+
+
+bool freqHealthy()
 {
-  sensor_ok = msg.data; // takes data from sensor_ok topic
+  if ((millis() - last_freq_update_) < 2UL*1000)
+  {
+    return (1);
+  }
+
+  return (0);
   
 }
 
-int prevCount = 0;
-unsigned long prev_time = millis();
-
-void countCallback(const std_msgs::Int32& msgCount)
+void freqCallback(const std_msgs::Bool& msg)
 {
-  int count = msgCount.data;
-  if (count == prevCount) // if talker stops publishing, sensor_ok is false
-  {
-    sensor_ok = false;
-  }
-  prevCount = count;
-  prev_time = millis(); // records the last time countCallback is called
+  sensor_ok_ = msg.data; // takes data from sensor_ok topic
+
+  last_freq_update_ = millis();
+  
 }
 
-
 ros::Subscriber<std_msgs::Bool> sub("sensor_ok", &freqCallback);
-ros::Subscriber<std_msgs::Int32> subCount("count_pub", &countCallback);
 
 
 void setup() {
@@ -75,7 +75,6 @@ void setup() {
 
   // Subscriber
   nh.subscribe(sub);
-  nh.subscribe(subCount);
 
   // Start the LED
   strip.begin();
@@ -132,16 +131,23 @@ void loop() {
   // Set the LED colour
   if (nh.connected())
   {
-     if ((sensor_ok) && (curr_time - prev_time < 2000)) // turns yellow if not publishing for more than 2 seconds
+     if ((sensor_ok_    == 1) &&
+         (freqHealthy() == 1)  )
      {
+
+      // Green means ROS and sensors are good
        strip.setPixelColor(0, strip.Color(0,   100,   0));
      }
      else 
      {
-       strip.setPixelColor(0, strip.Color(100,   50,   0)); // amber/yellow LED if sensor_ok is false
+      
+      // Turn LED yellow if ROS is ok, but sensors are not
+       strip.setPixelColor(0, strip.Color(100,   50,   0));
+     
      }
   } 
   else {
+      // Red means ROS is not connected
       strip.setPixelColor(0, strip.Color(100,   0,   0));
   }
   strip.show();
