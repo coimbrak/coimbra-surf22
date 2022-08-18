@@ -15,6 +15,14 @@
 		},
 
 		{
+			"name": "(DEBUG) Talker2",
+			"type": "ros",
+			"request": "launch",
+			"target": "${workspaceFolder}/launch/talker2.launch",
+			"preLaunchTask": "catkin: debug", // tasks.json
+		},
+
+		{
 			"name": "(DEBUG) Frequency",
 			"type": "ros",
 			"request": "launch",
