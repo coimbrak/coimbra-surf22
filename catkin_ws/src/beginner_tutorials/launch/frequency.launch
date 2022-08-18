@@ -1,6 +1,20 @@
 <launch>
+        <group ns="/node0">
+                <param name="target_freq" type="double" value="10.0" />
+                <node name="talker0" respawn="true" pkg="beginner_tutorials" type="talker" output="screen" />
+        </group>
 
-        <node respawn="true" pkg="beginner_tutorials" type="talker" name="talker1" output="screen" />
-        <node respawn="true" pkg="beginner_tutorials" type="talker2" name="talker2" output="screen" />
+        <group ns="/node1">
+                <param name="target_freq" type="double" value="20.0" />
+                <node name="talker1" respawn="true" pkg="beginner_tutorials" type="talker" output="screen" />
+        </group>
+
+        <group ns="/node2">
+                <param name="target_freq" type="double" value="30.0" />
+                <node name="talker2" respawn="true" pkg="beginner_tutorials" type="talker" output="screen" />
+        </group>
+
         <node respawn="true" pkg="beginner_tutorials" type="frequency" name="frequency1" output="screen" />
+
+
 </launch>

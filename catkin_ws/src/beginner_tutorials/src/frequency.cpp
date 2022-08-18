@@ -40,18 +40,21 @@ using namespace std::chrono;
 ros::Publisher chatter_pub;
 // std::string ss = "unknown";
 bool sensor_ok = 0;
-double last_freq_update_ = 0;
+// Add a new global variable "last_freq_update_" for each chatter node
+double last_freq_update0_ = 0;
+double last_freq_update1_ = 0;
+double last_freq_update2_ = 0;
 
-
-void chatterCallback(const std_msgs::String::ConstPtr& msg)
+// Copy/paste a new chatterCallback for each chatter node 
+// Change "actual" value as needed and change ref number for "last_freq_update_" for each new chatterCallback
+void chatterCallback0(const std_msgs::String::ConstPtr& msg)
 {
 
   static double prev_time = 0;
   double curr_time =ros::Time::now().toSec();
   double freq = 1/(curr_time - prev_time);
 
-  // ROS_INFO("last_freq_update_: %.2f,   new: %.2f,   diff: %.2f",last_freq_update_,curr_time,curr_time-last_freq_update_);
-  double actual = 12; // EDIT HERE FOR EXPECTED FREQUENCY
+  double actual = 10; // EDIT HERE FOR EXPECTED FREQUENCY FROM CHATTER TOPIC
   if ((actual - 0.5 < freq) && (freq < actual + 0.5)) // checks if signal frequency is within 1 Hz of expected frequency
     {
       sensor_ok = 1;
@@ -62,7 +65,51 @@ void chatterCallback(const std_msgs::String::ConstPtr& msg)
     }
 
   prev_time = curr_time;
-  last_freq_update_ = ros::Time::now().toSec(); // record the last time the callback was called
+  last_freq_update0_ = ros::Time::now().toSec(); // record the last time the callback was called
+
+}
+
+void chatterCallback1(const std_msgs::String::ConstPtr& msg)
+{
+
+  static double prev_time = 0;
+  double curr_time =ros::Time::now().toSec();
+  double freq = 1/(curr_time - prev_time);
+
+  double actual = 20; // EDIT HERE FOR EXPECTED FREQUENCY FROM CHATTER TOPIC
+  if ((actual - 0.5 < freq) && (freq < actual + 0.5)) // checks if signal frequency is within 1 Hz of expected frequency
+    {
+      sensor_ok = 1;
+    }
+  else
+    {
+      sensor_ok = 0;
+    }
+
+  prev_time = curr_time;
+  last_freq_update1_ = ros::Time::now().toSec(); // record the last time the callback was called
+
+}
+
+void chatterCallback2(const std_msgs::String::ConstPtr& msg)
+{
+
+  static double prev_time = 0;
+  double curr_time =ros::Time::now().toSec();
+  double freq = 1/(curr_time - prev_time);
+
+  double actual = 30; // EDIT HERE FOR EXPECTED FREQUENCY FROM CHATTER TOPIC
+  if ((actual - 0.5 < freq) && (freq < actual + 0.5)) // checks if signal frequency is within 1 Hz of expected frequency
+    {
+      sensor_ok = 1;
+    }
+  else
+    {
+      sensor_ok = 0;
+    }
+
+  prev_time = curr_time;
+  last_freq_update2_ = ros::Time::now().toSec(); // record the last time the callback was called
 
 }
 
@@ -75,7 +122,10 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
 
   chatter_pub = n.advertise<std_msgs::Bool>("sensor_ok", 10);
-  ros::Subscriber sub = n.subscribe("chatter", 10, chatterCallback);
+  // Copy/paste following for each chatter node (assign a new chatterCallback to each node)
+  ros::Subscriber sub0 = n.subscribe("/node0/chatter", 10, chatterCallback0);
+  ros::Subscriber sub1 = n.subscribe("/node1/chatter", 10, chatterCallback1);
+  ros::Subscriber sub2 = n.subscribe("/node2/chatter", 10, chatterCallback2);
 
 
   ros::Rate loop_rate(1); // Rate frequency.cpp is publishing
@@ -89,12 +139,13 @@ int main(int argc, char **argv)
   {
 
   double curr_freq_update = ros::Time::now().toSec();
-  if ((curr_freq_update - last_freq_update_) > 1)
+  // Edit conditional statement below to match # of chatter nodes
+  if (((curr_freq_update - last_freq_update0_) > 1) || ((curr_freq_update - last_freq_update1_) > 1) || ((curr_freq_update - last_freq_update2_) > 1))
   {
     sensor_ok = 0; // sensor is not ok if talker is not publishing
   }
 
-  ROS_INFO("last: %.2f,   new: %.2f,   diff: %.2f",last_freq_update_,curr_freq_update,curr_freq_update-last_freq_update_);
+  // ROS_INFO("last: %.2f,   new: %.2f,   diff: %.2f",last_freq_update0_,curr_freq_update,curr_freq_update-last_freq_update0_);
   msgOut.data = sensor_ok;
   chatter_pub.publish(msgOut); 
 
